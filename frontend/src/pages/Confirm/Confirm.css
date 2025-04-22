@@ -1,0 +1,102 @@
+.checkout-container {
+    display: grid;
+    grid-template-columns: 1fr 2fr;
+    gap: 2rem;
+    padding: 2rem;
+    max-width: 1200px;
+    margin: auto;
+    font-family: 'Poppins', sans-serif;
+}
+
+/* Order Summary & Payment Summary on the Same Row */
+.checkout-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+}
+
+/* Delivery Info + Order Playcard Side by Side */
+.checkout-details {
+    display: flex;
+    justify-content: space-between;
+    gap: 2rem;
+}
+
+/* Delivery Information */
+.checkout-delivery-info {
+    background: #fff;
+    padding: 1.5rem;
+    border-radius: 10px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+    flex: 1;
+}
+
+/* Order Summary Playcard */
+.checkout-order-summary {
+    flex: 1;
+    background: #fffcf5;
+    padding: 1.5rem;
+    border-radius: 15px;
+    box-shadow: 0 4px 15px rgba(255, 165, 0, 0.2);
+    border: 2px solid #ff7f50;
+    transition: 0.3s;
+}
+
+.checkout-order-summary:hover {
+    box-shadow: 0 6px 20px rgba(255, 99, 71, 0.3);
+}
+
+/* Payment Summary (Next to Order Summary) */
+.checkout-payment-summary {
+    background: #fff;
+    padding: 1.5rem;
+    border-radius: 10px;
+    box-shadow: 2px 4px 10px rgba(0, 0, 0, 0);
+    flex: auto;
+}
+
+/* Cart Items */
+.checkout-cart-items {
+    background: #fff;
+    padding: 1.5rem;
+    border-radius: 10px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+}
+
+/* Grid Layout for Cart Items */
+.cart-items-header,
+.cart-items-row {
+    display: grid;
+    grid-template-columns: 1fr 2fr 1fr 3fr 1fr 1fr;
+    align-items: center;
+    border-bottom: 1px solid #ddd;
+    padding: 1rem 0;
+}
+
+.cart-items-row img {
+    width: 60px;
+    height: 60px;
+    object-fit: cover;
+    border-radius: 5px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+}
+
+/* Confirm Order Button */
+.checkout-confirm-btn {
+    background: #ff7f50;
+    color: white;
+    font-size: 1rem;
+    font-weight: bold;
+    padding: 0.8rem 1.5rem;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    margin-top: 1.5rem;
+    display: block;
+    text-align: center;
+    transition: 0.3s;
+}
+
+.checkout-confirm-btn:hover {
+    background: #ff5733;
+}

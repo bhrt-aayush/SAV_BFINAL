@@ -1,0 +1,104 @@
+.navbar{
+    padding: 20px 0px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+.navbar .logo {
+    width: 250px; 
+    height: auto;
+    object-fit: contain; 
+  }
+.navbar-menu{
+  display: flex;
+  list-style: none;
+  gap: 35px;
+  color: #2C2C34;
+  font-size: 20px;
+}
+.navbar-right{
+    display: flex;
+    align-items: center;
+    gap: 40px;
+}
+.navbar button{
+    background: transparent;
+    font-size: 16px;
+    color: #2C2C34;
+    border: 1px solid rgb(183, 183, 183);
+    padding: 10px 40px;
+    border-radius: 50px;
+    cursor: pointer;
+    transition: 0.3s;
+}
+.navbar button:hover{
+    background-color:#45a049;
+    color: whitesmoke;
+}
+
+.navbar .active{
+    padding-bottom: 2px;
+    border-bottom: 2px solid;
+}
+.navbar li{
+    cursor: pointer;
+}
+.navbar-search-icon{
+    position: relative;
+}
+.navbar-search-icon .dot{
+    position: absolute;
+    min-width: 10px;
+    min-height: 10px;
+    background-color: #2C2C34;
+    border-radius: 10px;
+    top: -8px;
+    right: -8px;
+}
+.navbar-search-icon img {
+    width: 30px; 
+    height: 30px; 
+    object-fit: contain; 
+  }
+
+.profile-section {
+    position: relative;
+    cursor: pointer;
+}
+
+.profile-icon {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    object-fit: cover;
+}
+
+.profile-dropdown {
+    position: absolute;
+    top: 100%;
+    right: 0;
+    background: white;
+    border-radius: 8px;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+    padding: 8px;
+    display: none;
+}
+
+.profile-section:hover .profile-dropdown {
+    display: block;
+}
+
+.profile-dropdown button {
+    background: none;
+    border: none;
+    padding: 8px 16px;
+    width: 100%;
+    text-align: left;
+    cursor: pointer;
+    color: #333;
+    font-size: 14px;
+}
+
+.profile-dropdown button:hover {
+    background: #f5f5f5;
+}

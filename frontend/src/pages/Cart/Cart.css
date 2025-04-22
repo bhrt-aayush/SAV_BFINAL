@@ -1,0 +1,114 @@
+.cart {
+    margin-top: 100px;
+}
+
+.cart-items-title {
+    display: grid;
+    grid-template-columns: 1fr 1.5fr 1fr 2fr 1fr 1fr 0.5fr; /* Adjust column widths */
+    color: gray;
+    font-size: max(1vw, 12px);
+    align-items: center; /* Vertically align content */
+    text-align: left; /* Align text to the left */
+    padding: 10px 0; /* Add padding for spacing */
+}
+
+.cart-items-item {
+    display: grid;
+    grid-template-columns: 1fr 1.5fr 1fr 2fr 1fr 1fr 0.5fr; /* Same grid setup as title */
+    align-items: center; /* Vertically align content */
+    margin: 10px 0px;
+    color: black;
+}
+
+.cart-items-item img {
+    width: 50px;
+    height: auto; /* Maintain aspect ratio */
+}
+
+.cart hr {
+    height: 1px;
+    background-color: #e2e2e2;
+    border: none;
+    margin: 10px 0;
+}
+
+.cart-items-item .cross {
+    cursor: pointer;
+    color: red;
+    font-weight: bold;
+    text-align: center; /* Center the cross symbol */
+}
+
+.cart-bottom {
+    margin-top: 80px;
+    display: flex;
+    justify-content: space-between;
+    gap: max(12vw, 20px);
+}
+
+.cart-total {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+.cart-total-detail {
+    display: flex;
+    justify-content: space-between;
+    color: #555;
+}
+
+.cart-total hr {
+    margin: 10px 0px;
+}
+
+.cart-total button {
+    border: none;
+    color: white;
+    background-color: #45a049;
+    width: max(15vw, 200px);
+    padding: 12px 0px;
+    border-radius: 4px;
+    cursor: pointer;
+}
+
+.cart-suggestion {
+    flex: 1;
+    color: #555;
+}
+
+.cart-suggestion-input {
+    margin-top: 10px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background-color: #eaeaea;
+    border-radius: 4px;
+}
+
+.cart-suggestion-input input {
+    background: transparent;
+    border: none;
+    outline: none;
+    padding-left: 10px;
+}
+
+.cart-suggestion-input button {
+    width: max(10vw, 150px);
+    padding: 12px 5px;
+    background-color: #45a049;
+    border: none;
+    color: white;
+    border-radius: 4px;
+}
+
+@media (max-width: 750px) {
+    .cart-bottom {
+        flex-direction: column-reverse;
+    }
+
+    .cart-suggestion {
+        justify-content: start;
+    }
+}
