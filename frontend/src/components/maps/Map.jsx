@@ -4,6 +4,7 @@ import "leaflet/dist/leaflet.css"; // Leaflet styles
 import useLocalStorage from "../../hooks/useLocalStorage";
 import useGeolocation from "../../hooks/useGeolocation";
 import FindMeButton from "./FindMeButton";
+import "./Map.css";
 
 export default function Map({ 
   onLocationSelect, 
@@ -211,21 +212,25 @@ export default function Map({
   }, [position, locationConfirmed, getCurrentPosition, setUserPosition, onFindMeLocation, updateMarker, onLocationSelect]);
 
   return (
-    <div className="map-container">
-      <div
-        id="map"
-        ref={mapRef}
-        style={{
-          width: "100%",
-          height: "300px",
-          pointerEvents: locationConfirmed ? "none" : "auto",
-          opacity: locationConfirmed ? 0.9 : 1,
-        }}
-      >
-        {!locationConfirmed && (
-          <FindMeButton onFindMe={handleFindMe} loading={loading} error={error} />
-        )}
-      </div>
-    </div>
+    <div className="map-container" style={{ position: "relative" }}>
+    <div
+      id="map"
+      ref={mapRef}
+      style={{
+        width: "100%",
+        height: "300px",
+        pointerEvents: locationConfirmed ? "none" : "auto",
+        opacity: locationConfirmed ? 0.9 : 1,
+      }}
+    />
+  
+  {!locationConfirmed && (
+  <div className="find-me-button-wrapper">
+    <FindMeButton onFindMe={handleFindMe} loading={loading} error={error} />
+  </div>
+)}
+
+</div>
+
   );
 }
