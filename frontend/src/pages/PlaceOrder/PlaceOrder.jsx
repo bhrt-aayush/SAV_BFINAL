@@ -302,7 +302,7 @@ const PlaceOrder = () => {
         </div>
         
         <input required name='phone' type="text" placeholder='Phone' onChange={handleChange} value={userData.phone} />
-        <input name='suggestion' type="text" placeholder='Delivery Instructions (Optional)' onChange={handleChange} value={userData.suggestion} />
+        <input name='suggestion' type="text" placeholder='Suggestions (Optional)' onChange={handleChange} value={userData.suggestion} />
         
         {locationConfirmed && locationAddress && (
           <div className="confirmed-location-info">
