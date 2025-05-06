@@ -32,7 +32,7 @@ const AppContent = () => {
           <Route path='/cart' element={<Cart />} />
           <Route path='/placeorder' element={<PlaceOrder />} />
           <Route path='/order' element={<Checkout />} />
-          <Route path="/payment-success" element={<PaymentSuccess />} />
+          <Route path="/payment-success" element={<PaymentSuccess/>}/>  
           <Route path="/payment-failure" element={<PaymentFailure />} />
         </Routes>
       </div>

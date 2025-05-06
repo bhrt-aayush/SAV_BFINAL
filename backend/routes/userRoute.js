@@ -1,25 +1,25 @@
 import express from 'express';
-import { loginUser, registerUser, verifyOTP, resendVerification, initializeKhaltiPayment, verifyKhaltiPayment} from '../controllers/userController.js';
-import paymentModel from '../models/paymentModel.js' ;
+import { loginUser, registerUser, verifyOTP, resendVerification, initializeKhaltiPayment, verifyKhaltiPayment } from '../controllers/userController.js';
+import paymentModel from '../models/paymentModel.js';
 import foodModel from '../models/foodModel.js';
-import {fetchUser} from '../controllers/helper.js';
+import { fetchUser } from '../controllers/helper.js';
 import userModel from '../models/userModel.js';
 import PurchasedItem from '../models/paymentModel.js';
 
 
 const userRouter = express.Router();
 
-userRouter.post('/register', registerUser); 
+userRouter.post('/register', registerUser);
 userRouter.post('/login', loginUser);
 userRouter.post('/verify-otp', verifyOTP);
 userRouter.post('/resend-verification', resendVerification);
 userRouter.get('/list', async (req, res) => {
-  try{
+  try {
     // Fetch all users
     const users = await userModel.find({});
     res.json({ success: true, data: users });
 
-  }catch(error){
+  } catch (error) {
     console.error('Error fetching user list:', error);
     res.status(500).json({ message: 'Server error' });
   }
@@ -66,12 +66,12 @@ userRouter.get('/complete-khalti-payment', async (req, res) => {
 
     // Fetch the product associated with the purchased item using MongoDB _id
     const product = await foodModel.findById(purchasedItem.product);
-    
+
     // Remove the purchased item from user's favoriteData
     const user = await userModel.findOne({ 'favoriteData': { $exists: true } });
     if (user && user.favoriteData && product) {
       const itemId = product.id || product._id.toString();
-      
+
       if (user.favoriteData[itemId] && user.favoriteData[itemId] > 0) {
         user.favoriteData[itemId] = 0;
         delete user.favoriteData[itemId];
@@ -122,18 +122,18 @@ userRouter.post('/initialize-khalti', fetchUser, async (req, res) => {
     for (const item of cartItems) {
       // Use findById to query by MongoDB _id instead of numeric id
       const product = await foodModel.findById(item.productId);
-      
+
       if (!product) {
-        return res.status(404).json({ 
-          success: false, 
-          message: `Product not found: ${item.productId}` 
+        return res.status(404).json({
+          success: false,
+          message: `Product not found: ${item.productId}`
         });
       }
 
       const productPrice = product.new_price || product.price;
       const itemTotalPrice = productPrice * item.quantity;
       calculatedTotalPrice += itemTotalPrice;
-      
+
       const purchasedItem = await PurchasedItem.create({
         product: product._id, // Use MongoDB _id here
         totalPrice: itemTotalPrice, // Keep as is - no conversion needed
@@ -164,7 +164,7 @@ userRouter.post('/initialize-khalti', fetchUser, async (req, res) => {
         received: totalPrice,
       });
     }
-    
+
 
     // Prepare data for Khalti API
     const khaltiData = {
@@ -178,7 +178,7 @@ userRouter.post('/initialize-khalti', fetchUser, async (req, res) => {
 
     // Call Khalti API
     const paymentResponse = await initializeKhaltiPayment(
-      'http://localhost:4000/api/user',
+      'http://localhost:5174/api/user',
       khaltiData
     );
 
@@ -217,91 +217,91 @@ const KHALTI_VERIFY_URL = 'https://khalti.com/api/v2/payment/verify/';
 
 // Payment initialization (Optional if needed in your schema)
 userRouter.post('/initiate-payment', async (req, res) => {
-    try {
-        const { userId, amount } = req.body;
-        const user = await User.findById(userId);
-        if (!user) return res.status(404).json({ message: 'User not found' });
-        
-        const payment = new Payment({
-            user: userId,
-            amount,
-            status: 'PENDING',
-        });
-        await payment.save();
+  try {
+    const { userId, amount } = req.body;
+    const user = await User.findById(userId);
+    if (!user) return res.status(404).json({ message: 'User not found' });
 
-        res.json({ message: 'Payment initiated', paymentId: payment._id });
-    } catch (error) {
-        res.status(500).json({ message: 'Server error', error });
-    }
+    const payment = new Payment({
+      user: userId,
+      amount,
+      status: 'PENDING',
+    });
+    await payment.save();
+
+    res.json({ message: 'Payment initiated', paymentId: payment._id });
+  } catch (error) {
+    res.status(500).json({ message: 'Server error', error });
+  }
 });
 
 // List purchased items
 userRouter.get('/list-purchased-items/:userID', async (req, res) => {
-    try {
-        const userId = req.params.userID;
-        console.log('Attempting to find items for user:', userId);
-        
-        const purchasedItems = await PurchasedItem.find({ userId });
-        console.log('Query result:', purchasedItems);
-        
-        if (!purchasedItems || purchasedItems.length === 0) {
-            return res.status(404).json({ message: 'No purchased items found' });
-        }
+  try {
+    const userId = req.params.userID;
+    console.log('Attempting to find items for user:', userId);
 
-        res.json({ purchasedItems });
-    } catch (error) {
-        console.error('Error fetching purchased items:', error);
-        res.status(500).json({ message: 'Server error', error });
+    const purchasedItems = await PurchasedItem.find({ userId });
+    console.log('Query result:', purchasedItems);
+
+    if (!purchasedItems || purchasedItems.length === 0) {
+      return res.status(404).json({ message: 'No purchased items found' });
     }
+
+    res.json({ purchasedItems });
+  } catch (error) {
+    console.error('Error fetching purchased items:', error);
+    res.status(500).json({ message: 'Server error', error });
+  }
 });
 
 // Verify Khalti payment
 userRouter.post('/verify-payment', async (req, res) => {
-    try {
-        const { token, amount, userId, purchasedItemId } = req.body;
-        
-        const purchasedItem = await PurchasedItem.findById(purchasedItemId);
-        if (!purchasedItem) return res.status(404).json({ message: 'Purchased item not found' });
-        
-        const user = await userModel.findById(userId);
-        if (!user) return res.status(404).json({ message: 'User not found' });
+  try {
+    const { token, amount, userId, purchasedItemId } = req.body;
 
-        // Verify the Khalti payment
-        const response = await axios.post(KHALTI_VERIFY_URL, {
-            token,
-            amount,
-        }, {
-            headers: { Authorization: `Key ${KHALTI_SECRET_KEY}` }
-        });
+    const purchasedItem = await PurchasedItem.findById(purchasedItemId);
+    if (!purchasedItem) return res.status(404).json({ message: 'Purchased item not found' });
 
-        if (response.data.state.name === 'Completed') {
-            // Update the purchased item with completed status
-            purchasedItem.status = 'completed';
-            await purchasedItem.save();
+    const user = await userModel.findById(userId);
+    if (!user) return res.status(404).json({ message: 'User not found' });
 
-            // Clear the user's cart after successful payment if needed
-            user.cartData = {};
-            await user.save();
+    // Verify the Khalti payment
+    const response = await axios.post(KHALTI_VERIFY_URL, {
+      token,
+      amount,
+    }, {
+      headers: { Authorization: `Key ${KHALTI_SECRET_KEY}` }
+    });
 
-            return res.json({ 
-                message: 'Payment verified successfully', 
-                purchasedItem,
-                transactionId: response.data.idx
-            });
-        }
-        
-        // If payment verification failed
-        purchasedItem.status = 'failed';
-        await purchasedItem.save();
-        
-        res.status(400).json({ message: 'Payment verification failed' });
-    } catch (error) {
-        console.error('Payment verification error:', error);
-        res.status(500).json({ 
-            message: 'Payment verification error', 
-            error: error.message 
-        });
+    if (response.data.state.name === 'Completed') {
+      // Update the purchased item with completed status
+      purchasedItem.status = 'completed';
+      await purchasedItem.save();
+
+      // Clear the user's cart after successful payment if needed
+      user.cartData = {};
+      await user.save();
+
+      return res.json({
+        message: 'Payment verified successfully',
+        purchasedItem,
+        transactionId: response.data.idx
+      });
     }
+
+    // If payment verification failed
+    purchasedItem.status = 'failed';
+    await purchasedItem.save();
+
+    res.status(400).json({ message: 'Payment verification failed' });
+  } catch (error) {
+    console.error('Payment verification error:', error);
+    res.status(500).json({
+      message: 'Payment verification error',
+      error: error.message
+    });
+  }
 });
 
 export default userRouter;

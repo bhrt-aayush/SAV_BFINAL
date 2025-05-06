@@ -17,16 +17,16 @@ const generateOTP = () => {
 };
 
 //login user
-export const loginUser = async (req,res) =>{
-    const {email, password} = req.body;
+export const loginUser = async (req, res) => {
+    const { email, password } = req.body;
     try {
         console.log('Login attempt for email:', email);
 
         // Find user
-        const user = await userModel.findOne({email});
-        if(!user){
+        const user = await userModel.findOne({ email });
+        if (!user) {
             console.log('User not found for email:', email);
-            return res.json({success:false, message:'User does not exist'}) 
+            return res.json({ success: false, message: 'User does not exist' })
         }
 
         console.log('User found:', {
@@ -45,14 +45,14 @@ export const loginUser = async (req,res) =>{
         const isMatch = await bcrypt.compare(password, user.password);
         console.log('Password match result:', isMatch);
 
-        if(!isMatch){
+        if (!isMatch) {
             console.log('Invalid password for user:', email);
-            return res.json({success:false, message:'Invalid credentials'})
+            return res.json({ success: false, message: 'Invalid credentials' })
         }
 
         // Generate JWT token
         const token = createToken(user._id);
-        
+
         // Return success with token and user info
         res.json({
             success: true,
@@ -65,7 +65,7 @@ export const loginUser = async (req,res) =>{
         });
     } catch (error) {
         console.log(error)
-        res.json({success:false, message:'Error'})
+        res.json({ success: false, message: 'Error' })
     }
 }
 
@@ -92,7 +92,7 @@ export const verifyOTP = async (req, res) => {
         // Compare OTPs
         console.log('Stored OTP:', user.verificationToken);
         console.log('Received OTP:', otp);
-        
+
         if (user.verificationToken !== otp) {
             console.log('OTP mismatch for user:', email);
             return res.json({ success: false, message: 'Invalid OTP' });
@@ -100,7 +100,7 @@ export const verifyOTP = async (req, res) => {
 
         // OTP is valid
         console.log('OTP verified successfully for user:', email);
-        
+
         // Update user verification status
         user.isVerified = true;
         user.verificationToken = undefined;
@@ -109,7 +109,7 @@ export const verifyOTP = async (req, res) => {
 
         // Create token
         const token = createToken(user._id);
-        
+
         res.json({
             success: true,
             token,
@@ -125,37 +125,37 @@ export const verifyOTP = async (req, res) => {
     }
 };
 
-const createToken = (id) =>{
-    return jwt.sign({id},process.env.JWT_SECRET)
+const createToken = (id) => {
+    return jwt.sign({ id }, process.env.JWT_SECRET)
 }
 
 //register user
-export const registerUser = async (req, res) =>{
-    const {name,password,email} = req.body;
+export const registerUser = async (req, res) => {
+    const { name, password, email } = req.body;
     try {
         console.log('Starting registration for email:', email);
 
         // checking is user already exists
-        const exists = await userModel.findOne({email});
-        if(exists){
+        const exists = await userModel.findOne({ email });
+        if (exists) {
             console.log('User already exists:', email);
-            return res.json({success:false, message:'User already exists'})
+            return res.json({ success: false, message: 'User already exists' })
         }
 
         //validating email format and strong password
-        if(!validator.isEmail(email)){
+        if (!validator.isEmail(email)) {
             console.log('Invalid email format:', email);
-            return res.json({success:false, message:'Please enter a valid email'})
+            return res.json({ success: false, message: 'Please enter a valid email' })
         }
 
-        if(password.length<8){
+        if (password.length < 8) {
             console.log('Password too short for email:', email);
-            return res.json({success:false, message:'Please enter a strong password'})
+            return res.json({ success: false, message: 'Please enter a strong password' })
         }
 
         // hashing user password
         const salt = await bcrypt.genSalt(10)
-        const hashedPassword = await bcrypt.hash(password,salt);
+        const hashedPassword = await bcrypt.hash(password, salt);
 
         // Generate OTP
         const otp = generateOTP();
@@ -163,10 +163,10 @@ export const registerUser = async (req, res) =>{
         console.log('Generated OTP for registration:', otp);
 
         const newUser = new userModel({
-            name:name,
-            email:email,
-            password:hashedPassword,
-            PurchasedItems:[],
+            name: name,
+            email: email,
+            password: hashedPassword,
+            PurchasedItems: [],
             isVerified: false,
             verificationToken: otp,
             verificationTokenExpires: otpExpires
@@ -186,7 +186,7 @@ export const registerUser = async (req, res) =>{
         res.json({ success: true, message: 'OTP sent to your email', email });
     } catch (error) {
         console.error('Registration error:', error);
-        res.json({success:false, message:'Error during registration'})
+        res.json({ success: false, message: 'Error during registration' })
     }
 }
 
@@ -205,7 +205,7 @@ export const resendVerification = async (req, res) => {
         // Generate new OTP
         const otp = generateOTP();
         const otpExpires = Date.now() + 10 * 60 * 1000;
-        
+
         user.verificationToken = otp;
         user.verificationTokenExpires = otpExpires;
         await user.save();
@@ -223,82 +223,83 @@ export const resendVerification = async (req, res) => {
     }
 };
 
-export async function initializeKhaltiPayment(url,details) {
-  const headersList = {
-    "Authorization": `Key ${process.env.KHALTI_SECRET_KEY}`,
-  };
+export async function initializeKhaltiPayment(url, details) {
+    const headersList = {
+        "Authorization": `Key ${process.env.KHALTI_SECRET_KEY}`,
+    };
 
-  const reqOptions = {
-    url: `${process.env.KHALTI_GATEWAY_URL}/api/v2/epayment/initiate/`,
-    method: "POST",
-    headers: headersList,
-    data: details,
-  };
+    const reqOptions = {
+        url: `${process.env.KHALTI_GATEWAY_URL}/api/v2/epayment/initiate/`,
+        method: "POST",
+        headers: headersList,
+        data: details,
+    };
 
-  try {
+    try {
         const response = await callKhaltiApi(
-      'https://dev.khalti.com/api/v2/epayment/initiate/',
-      'POST',
-      {
-        totalPrice: details.totalPrice * 100,
-        orderId: details.orderId,
-        orderName: details.orderName,
-        customerName: details.customerName,
-        customerEmail: details.customerEmail,
-        customerPhone: details.customerPhone || ""
-      }
-    );
-    
-    console.log('Payment initialized successfully:', response);
-    return response;    
-  } catch (error) {
-    console.error("Error initializing Khalti payment:", {
-      message: error.message,
-      status: error.response?.status,
-      data: error.response?.data,
-      requestData: details,
-    });
-    
-    let errorMessage = `Khalti API error: ${error.response?.status || 'Unknown'} - ${error.response?.data?.message || error.message}`;
-    if (error.response?.status === 401) {
-      errorMessage = 'Khalti API error: 401 - Invalid or unauthorized Khalti API key';
+            
+            'https://dev.khalti.com/api/v2/epayment/initiate/',
+            'POST',
+            {
+                totalPrice: details.totalPrice * 100,
+                orderId: details.orderId,
+                orderName: details.orderName,
+                customerName: details.customerName,
+                customerEmail: details.customerEmail,
+                customerPhone: details.customerPhone || ""
+            }
+        );
+
+        console.log('Payment initialized successfully:', response);
+        return response;
+    } catch (error) {
+        console.error("Error initializing Khalti payment:", {
+            message: error.message,
+            status: error.response?.status,
+            data: error.response?.data,
+            requestData: details,
+        });
+
+        let errorMessage = `Khalti API error: ${error.response?.status || 'Unknown'} - ${error.response?.data?.message || error.message}`;
+        if (error.response?.status === 401) {
+            errorMessage = 'Khalti API error: 401 - Invalid or unauthorized Khalti API key';
+        }
+        throw new Error(errorMessage);
     }
-    throw new Error(errorMessage);
-  }
 }
 export async function verifyKhaltiPayment(pidx) {
-  const headersList = {
-    "Authorization": `Key ${process.env.KHALTI_SECRET_KEY}`,
-    "Content-Type": "application/json",
-  };
+    const headersList = {
+        "Authorization": `Key ${process.env.KHALTI_SECRET_KEY}`,
+        "Content-Type": "application/json",
+    };
 
-  const bodyContent = { pidx };
+    const bodyContent = { pidx };
 
-  const reqOptions = {
-    url: `${process.env.KHALTI_GATEWAY_URL}/api/v2/epayment/lookup/`,
-    method: "POST",
-    headers: headersList,
-    data: bodyContent,
-  };
+    const reqOptions = {
+        url: `${process.env.KHALTI_GATEWAY_URL}/api/v2/epayment/lookup/`,
+        method: "POST",
+        headers: headersList,
+        data: bodyContent,
+    };
 
-  try {
-    console.log('Verifying Khalti payment with pidx:', pidx);
-    const response = await axios.request(reqOptions);
-    console.log('Khalti Verification Response:', response.data);
-    return response.data;
-  } catch (error) {
-    console.error("Error verifying Khalti payment:", {
-      message: error.message,
-      status: error.response?.status,
-      data: error.response?.data,
-      requestData: bodyContent,
-    });
-    let errorMessage = `Khalti API error: ${error.response?.status || 'Unknown'} - ${error.response?.data?.message || error.message}`;
-    if (error.response?.status === 401) {
-      errorMessage = 'Khalti API error: 401 - Invalid or unauthorized Khalti API key';
+    try {
+        console.log('Verifying Khalti payment with pidx:', pidx);
+        const response = await axios.request(reqOptions);
+        console.log('Khalti Verification Response:', response.data);
+        return response.data;
+    } catch (error) {
+        console.error("Error verifying Khalti payment:", {
+            message: error.message,
+            status: error.response?.status,
+            data: error.response?.data,
+            requestData: bodyContent,
+        });
+        let errorMessage = `Khalti API error: ${error.response?.status || 'Unknown'} - ${error.response?.data?.message || error.message}`;
+        if (error.response?.status === 401) {
+            errorMessage = 'Khalti API error: 401 - Invalid or unauthorized Khalti API key';
+        }
+        throw new Error(errorMessage);
     }
-    throw new Error(errorMessage);
-  }
 }
 
 

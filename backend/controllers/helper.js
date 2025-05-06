@@ -20,7 +20,8 @@ const fetchUser = (req, res, next) => {
 };
 
 // Function to call Khalti API
-const callKhaltiApi = async (url, method, data) => {  
+const callKhaltiApi = async (url, method, data) => {
+  const FRONTEND_URL = process.env.FRONTEND_URL || "http://localhost:5174";
   const options = {
     method: method,
     url: 'https://dev.khalti.com/api/v2/epayment/initiate/',
@@ -30,9 +31,9 @@ const callKhaltiApi = async (url, method, data) => {
     },
     data: JSON.stringify({
       // Change these URLs to match the route handler in the backend
-      "return_url": `${url}/complete-khalti-payment`,
-      "cancel_url": `${url}/complete-khalti-payment?status=failed`,
-      "website_url": process.env.FRONTEND_URL || "http://localhost:5172",
+      "return_url": `${FRONTEND_URL}/payment-success`,
+      "cancel_url": `${FRONTEND_URL}/payment-failure`,
+      "website_url": process.env.FRONTEND_URL || "http://localhost:5173",
       "amount": data.totalPrice,
       "purchase_order_id": data.orderId,
       "purchase_order_name": data.orderName,
