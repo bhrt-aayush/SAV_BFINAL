@@ -2,24 +2,55 @@ import express from "express";
 import { addFood, listFood, removeFood } from "../controllers/foodController.js";
 import foodModel from "../models/foodModel.js";
 import multer from "multer";
+import path from 'path';
+import fs from 'fs';
 
 const foodRouter = express.Router();
+
+// Ensure upload directories exist
+const createUploadDirs = () => {
+    const dirs = [
+        'uploads',
+        'admin/public/assets',
+        'frontend/public/assets'
+    ];
+    
+    dirs.forEach(dir => {
+        if (!fs.existsSync(dir)) {
+            fs.mkdirSync(dir, { recursive: true });
+        }
+    });
+};
+
+createUploadDirs();
 
 // Image storage engine
 const storage = multer.diskStorage({
     destination: "uploads",
     filename: (req, file, cb) => {
-        return cb(null, `${Date.now()}-${file.originalname}`);
+        const timestamp = Date.now();
+        const ext = path.extname(file.originalname);
+        const filename = `Food-${timestamp}${ext}`;
+        return cb(null, filename);
     }
 });
 
 // Initialize multer
-const upload = multer({ storage: storage });
+const upload = multer({ 
+    storage: storage,
+    fileFilter: (req, file, cb) => {
+        // Accept images only
+        if (!file.originalname.match(/\.(jpg|jpeg|png|gif)$/)) {
+            return cb(new Error('Only image files are allowed!'), false);
+        }
+        cb(null, true);
+    }
+});
 
 // Define the route after initializing upload
 foodRouter.post("/add", upload.single("image"), addFood);
-foodRouter.get("/list",listFood)
-foodRouter.post("/remove",removeFood)
+foodRouter.get("/list", listFood);
+foodRouter.post("/remove", removeFood);
 
 foodRouter.get("/getfood/:id", async (req, res) => {
     try {
