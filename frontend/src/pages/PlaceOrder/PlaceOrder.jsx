@@ -243,7 +243,7 @@ const PlaceOrder = () => {
     };
     
     setUserInfo(finalUserData); // Save all data in context
-    navigate('/order'); // Redirect to Checkout page
+    navigate('/checkout'); // Redirect to Checkout page
   };
 
   return (
