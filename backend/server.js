@@ -3,6 +3,7 @@ import cors from 'cors';
 import Database from './config/db.js';
 import foodRouter from './routes/foodRoute.js';
 import userRouter from './routes/userRoute.js';
+import adminRouter from './routes/adminRoute.js';
 import path from 'path';
 import { fileURLToPath } from 'url';
 import 'dotenv/config';
@@ -33,6 +34,7 @@ Database.getInstance().connectDB('mongodb+srv://ayu:1122@cluster0.crrax0u.mongod
 // api endpoints
 app.use("/api/food", foodRouter);
 app.use("/api/user", userRouter);
+app.use("/api/admin", adminRouter);
 
 app.get("/", (req, res) => {
     res.send("API working");

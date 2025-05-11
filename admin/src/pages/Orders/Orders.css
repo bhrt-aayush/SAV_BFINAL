@@ -1,21 +1,162 @@
+.order {
+    padding: 20px;
+}
+
+.order h3 {
+    margin-bottom: 20px;
+    color: #333;
+    font-size: 24px;
+}
+
+.loading {
+    text-align: center;
+    padding: 20px;
+    color: #666;
+    font-size: 16px;
+}
+
+.no-orders {
+    text-align: center;
+    padding: 40px;
+    color: #666;
+    font-size: 18px;
+    background: #f8f9fa;
+    border-radius: 10px;
+    margin: 20px 0;
+}
+
+.order-list {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
 .order-item {
-    display: grid;
-    grid-template-columns: 0.5fr 2fr 1fr 1fr; 
-    align-items: start;
-    gap: 1.5rem;
-    border-radius: 8px;
-    border: 1px solid #ff6347;
-    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
-    padding: 1.25rem;
-    margin: 1.875rem 0;
-    font-size: 0.875rem;
-    color: #404040;
-    transition: all 0.3s ease;
+    display: flex;
+    align-items: flex-start;
+    gap: 20px;
+    padding: 20px;
+    background: #fff;
+    border-radius: 10px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    transition: transform 0.2s ease;
 }
 
 .order-item:hover {
     transform: translateY(-2px);
-    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.08);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+}
+
+.order-item img {
+    width: 50px;
+    height: 50px;
+    object-fit: contain;
+}
+
+.order-details {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.order-item-food {
+    font-size: 16px;
+    color: #333;
+    line-height: 1.4;
+}
+
+.order-item-name {
+    font-weight: 600;
+    color: #444;
+}
+
+.order-item-address {
+    color: #666;
+    font-size: 14px;
+}
+
+.order-item-phone {
+    color: #666;
+    font-size: 14px;
+}
+
+.payment-info {
+    margin-top: 12px;
+    padding: 12px;
+    background: #f8f9fa;
+    border-radius: 6px;
+    border-left: 4px solid #007bff;
+}
+
+.payment-info p {
+    margin: 4px 0;
+    font-size: 14px;
+    color: #555;
+}
+
+.payment-info strong {
+    color: #333;
+    margin-right: 8px;
+}
+
+.order-summary {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    gap: 8px;
+    min-width: 150px;
+}
+
+.order-summary p {
+    font-size: 15px;
+    color: #333;
+}
+
+.order-summary select {
+    padding: 8px 12px;
+    border: 1px solid #ddd;
+    border-radius: 6px;
+    background: #fff;
+    color: #333;
+    font-size: 14px;
+    cursor: pointer;
+    transition: border-color 0.2s ease;
+}
+
+.order-summary select:hover {
+    border-color: #007bff;
+}
+
+.order-summary select:disabled {
+    background: #f5f5f5;
+    cursor: not-allowed;
+    opacity: 0.7;
+}
+
+/* Status-specific colors */
+.order-summary select option[value="pending"] {
+    color: #ffc107;
+}
+
+.order-summary select option[value="confirmed"] {
+    color: #17a2b8;
+}
+
+.order-summary select option[value="preparing"] {
+    color: #007bff;
+}
+
+.order-summary select option[value="out_for_delivery"] {
+    color: #6f42c1;
+}
+
+.order-summary select option[value="delivered"] {
+    color: #28a745;
+}
+
+.order-summary select option[value="cancelled"] {
+    color: #dc3545;
 }
 
 .order-item-food, .order-item-name {
