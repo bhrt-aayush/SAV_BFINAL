@@ -1,0 +1,123 @@
+.payment-success-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+    background-color: #f3f4f6;
+    padding: 1rem;
+  }
+  
+  .payment-card {
+    background-color: #ffffff;
+    border-radius: 1rem;
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.08);
+    padding: 2rem;
+    max-width: 480px;
+    width: 100%;
+  }
+  
+  .icon-container {
+    display: flex;
+    justify-content: center;
+    margin-bottom: 1.5rem;
+  }
+  
+  .icon-circle {
+    background-color: #22c55e;
+    border-radius: 50%;
+    padding: 1rem;
+  }
+  
+  .icon-check {
+    height: 3rem;
+    width: 3rem;
+    color: #ffffff;
+  }
+  
+  .success-title {
+    font-size: 1.875rem;
+    font-weight: 700;
+    text-align: center;
+    color: #1f2937;
+    margin-bottom: 0.5rem;
+  }
+  
+  .success-message {
+    text-align: center;
+    color: #6b7280;
+    margin-bottom: 0.5rem;
+  }
+  
+  .transaction-id {
+    text-align: center;
+    font-weight: 500;
+    margin-bottom: 1.5rem;
+    color: #374151;
+  }
+  
+  .loading-text {
+    text-align: center;
+    color: #6b7280;
+    margin-bottom: 1rem;
+  }
+  
+  .error-message {
+    background-color: #fee2e2;
+    color: #b91c1c;
+    padding: 0.75rem;
+    border-radius: 0.5rem;
+    margin-bottom: 1rem;
+    text-align: center;
+  }
+  
+  .order-details {
+    border-top: 1px solid #e5e7eb;
+    padding-top: 1rem;
+    margin-bottom: 1.5rem;
+  }
+  
+  .order-details h2 {
+    font-size: 1.25rem;
+    font-weight: 600;
+    margin-bottom: 0.75rem;
+  }
+  
+  .order-details p {
+    color: #374151;
+    margin-bottom: 0.25rem;
+  }
+  
+  .button-group {
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+  }
+  
+  .btn-primary {
+    background-color: #2563eb;
+    color: #ffffff;
+    padding: 0.5rem 1rem;
+    text-align: center;
+    border-radius: 0.5rem;
+    transition: background-color 0.2s ease;
+    text-decoration: none;
+  }
+  
+  .btn-primary:hover {
+    background-color: #1d4ed8;
+  }
+  
+  .btn-secondary {
+    border: 1px solid #d1d5db;
+    color: #374151;
+    padding: 0.5rem 1rem;
+    text-align: center;
+    border-radius: 0.5rem;
+    transition: background-color 0.2s ease;
+    text-decoration: none;
+  }
+  
+  .btn-secondary:hover {
+    background-color: #f9fafb;
+  }
+  

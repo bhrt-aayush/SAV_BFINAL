@@ -115,14 +115,12 @@ userRouter.post('/initialize-khalti', fetchUser, async (req, res) => {
       return res.status(404).json({ success: false, message: 'User not found' });
     }
 
-    const purchasedItems = [];
     let calculatedTotalPrice = 0;
+    const orderItems = [];
 
-    // Create purchased items and calculate total price
+    // Process cart items and calculate total price
     for (const item of cartItems) {
-      // Use findById to query by MongoDB _id instead of numeric id
       const product = await foodModel.findById(item.productId);
-
       if (!product) {
         return res.status(404).json({
           success: false,
@@ -134,27 +132,17 @@ userRouter.post('/initialize-khalti', fetchUser, async (req, res) => {
       const itemTotalPrice = productPrice * item.quantity;
       calculatedTotalPrice += itemTotalPrice;
 
-      const purchasedItem = await PurchasedItem.create({
-        product: product._id, // Use MongoDB _id here
-        totalPrice: itemTotalPrice, // Keep as is - no conversion needed
+      // Create order item
+      orderItems.push({
+        product: product._id,
         quantity: item.quantity,
-        size: item.size || 'N/A',
-        productImage: product.image,
-        paymentMethod: 'khalti',
-        status: 'pending'
+        price: productPrice,
+        name: product.name,
+        image: product.image
       });
-      purchasedItems.push(purchasedItem);
-
-      const update_user = await userModel.findByIdAndUpdate(
-        userId,
-        { $set: { [`cartData.${item.productId}`]: 0 } },
-        { new: true }
-      );
-      console.log('Updated user cart:', update_user);
     }
 
     // Check if the calculated total price matches the provided total price
-    // Don't strictly compare - allow for rounding differences
     const DeliveryFee = 50; // Example delivery fee
     if (Math.abs(calculatedTotalPrice - totalPrice + DeliveryFee) > 1) {
       return res.status(400).json({
@@ -165,11 +153,30 @@ userRouter.post('/initialize-khalti', fetchUser, async (req, res) => {
       });
     }
 
+    // Create the order with all items
+    const purchasedItem = await PurchasedItem.create({
+      userId: userId,
+      cartItems: orderItems,
+      totalPrice: calculatedTotalPrice,
+      totalItems: orderItems.reduce((sum, item) => sum + item.quantity, 0),
+      paymentMethod: 'khalti',
+      status: 'pending',
+      orderStatus: 'pending',
+      orderPlacedAt: new Date()
+    });
+
+    // Clear the user's cart
+    const update_user = await userModel.findByIdAndUpdate(
+      userId,
+      { $set: { cartData: {} } },
+      { new: true }
+    );
+    console.log('Cleared user cart:', update_user);
 
     // Prepare data for Khalti API
     const khaltiData = {
-      totalPrice: totalPrice, // Keep as is - no conversion
-      orderId: purchasedItems[0]._id.toString(), // Use first item's ID
+      totalPrice: totalPrice,
+      orderId: purchasedItem._id.toString(),
       orderName: 'Food Order',
       customerName: user.name || 'Customer',
       customerEmail: user.email || 'customer@example.com',
@@ -182,25 +189,11 @@ userRouter.post('/initialize-khalti', fetchUser, async (req, res) => {
       khaltiData
     );
 
-    // Fetch product names for order details
-    const orderDetails = await Promise.all(
-      purchasedItems.map(async (item) => {
-        const product = await foodModel.findById(item.product);
-        return {
-          productName: product.name,
-          quantity: item.quantity,
-          size: item.size,
-          totalPrice: item.totalPrice, // Keep as is - no conversion needed
-          productImage: item.productImage,
-        };
-      })
-    );
-
     res.json({
       success: true,
-      purchasedItems,
+      purchasedItem,
       payment: paymentResponse,
-      orderDetails,
+      orderDetails: orderItems
     });
   } catch (error) {
     console.error('Error in /initialize-khalti:', error);
@@ -236,18 +229,32 @@ userRouter.post('/initiate-payment', async (req, res) => {
 });
 
 // List purchased items
-userRouter.get('/list-purchased-items/:userID', async (req, res) => {
+userRouter.get('/list-purchased-items/:userID', fetchUser, async (req, res) => {
   try {
-    const userId = req.params.userID;
-    console.log('Attempting to find items for user:', userId);
-
+    let userId = req.params.userID;
+    // If 'me', use the ID from the token
+    if (userId === 'me') {
+      userId = req.user.id || req.user._id || req.user;
+    }
     const purchasedItems = await PurchasedItem.find({ userId });
-    console.log('Query result:', purchasedItems);
-
     if (!purchasedItems || purchasedItems.length === 0) {
       return res.status(404).json({ message: 'No purchased items found' });
     }
+    res.json({ purchasedItems });
+  } catch (error) {
+    console.error('Error fetching purchased items:', error);
+    res.status(500).json({ message: 'Server error', error });
+  }
+});
 
+// Dedicated route for /me
+userRouter.get('/list-purchased-items/me', fetchUser, async (req, res) => {
+  try {
+    const userId = req.user.id || req.user._id || req.user;
+    const purchasedItems = await PurchasedItem.find({ userId });
+    if (!purchasedItems || purchasedItems.length === 0) {
+      return res.status(404).json({ message: 'No purchased items found' });
+    }
     res.json({ purchasedItems });
   } catch (error) {
     console.error('Error fetching purchased items:', error);
@@ -299,6 +306,114 @@ userRouter.post('/verify-payment', async (req, res) => {
     console.error('Payment verification error:', error);
     res.status(500).json({
       message: 'Payment verification error',
+      error: error.message
+    });
+  }
+});
+
+// Add delivery location information
+userRouter.post('/save-delivery-info', fetchUser, async (req, res) => {
+  try {
+    const {
+      firstName,
+      lastName,
+      email,
+      phone,
+      street,
+      city,
+      zipcode,
+      suggestion,
+      latitude,
+      longitude,
+      formattedAddress,
+      usingCurrentLocation,
+      orderId
+    } = req.body;
+
+    // Validate required fields
+    if (!orderId) {
+      return res.status(400).json({
+        success: false,
+        message: 'Order ID is required'
+      });
+    }
+
+    // Find the purchased item
+    const purchasedItem = await PurchasedItem.findById(orderId);
+    if (!purchasedItem) {
+      return res.status(404).json({
+        success: false,
+        message: 'Order not found'
+      });
+    }
+
+    // Update the purchased item with delivery information
+    const updatedItem = await PurchasedItem.findByIdAndUpdate(
+      orderId,
+      {
+        deliveryInfo: {
+          firstName,
+          lastName,
+          email,
+          phone,
+          street,
+          city,
+          zipcode,
+          suggestion,
+          location: {
+            type: 'Point',
+            coordinates: [longitude, latitude] // MongoDB expects [longitude, latitude]
+          },
+          formattedAddress,
+          usingCurrentLocation
+        },
+        orderStatus: 'confirmed',
+        orderConfirmedAt: new Date()
+      },
+      { new: true }
+    );
+
+    res.json({
+      success: true,
+      message: 'Delivery information saved successfully',
+      data: updatedItem
+    });
+
+  } catch (error) {
+    console.error('Error saving delivery information:', error);
+    res.status(500).json({
+      success: false,
+      message: 'Error saving delivery information',
+      error: error.message
+    });
+  }
+});
+
+// Get delivery location for an order
+userRouter.get('/delivery-info/:orderId', fetchUser, async (req, res) => {
+  try {
+    const { orderId } = req.params;
+
+    const purchasedItem = await PurchasedItem.findById(orderId)
+      .select('deliveryInfo orderStatus orderPlacedAt orderConfirmedAt orderDeliveredAt');
+
+    if (!purchasedItem) {
+      return res.status(404).json({
+        success: false,
+        message: 'Order not found'
+      });
+    }
+
+    res.json({
+      success: true,
+      data: purchasedItem
+    });
+
+  } catch (error) {
+    console.error('Error fetching delivery information:', error);
+    res.status(500).json({
+      success: false,
+      message: 'Error fetching delivery information',
       error: error.message
     });
   }

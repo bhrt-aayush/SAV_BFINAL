@@ -24,7 +24,7 @@ const Checkout = () => {
                 items.push({
                     productId: item._id,
                     quantity: cartItems[item._id],
-                    size: 'N/A' // Add size if your products have sizes
+                    
                 });
             }
         });
@@ -76,7 +76,7 @@ const Checkout = () => {
                 // Store order details in localStorage for post-payment reference
                 localStorage.setItem('pendingOrderDetails', JSON.stringify({
                     orderDetails: response.data.orderDetails,
-                    orderId: response.data.purchasedItems[0]?._id,
+                    orderId: response.data.purchasedItem._id,
                     amount: totalAmount
                 }));
                 
