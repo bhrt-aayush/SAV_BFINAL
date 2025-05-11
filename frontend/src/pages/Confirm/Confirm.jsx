@@ -43,18 +43,15 @@ const Checkout = () => {
             if (!token) {
                 throw new Error('You must be logged in to make a payment');
             }
-            
+
             const preparedCartItems = prepareCartItems();
-            
             if (preparedCartItems.length === 0) {
                 throw new Error('Your cart is empty');
             }
-            
-            console.log("Starting payment process with token:", token);
-            setPaymentStatus('Initializing payment...');
-            
-            // Call backend to initialize payment
-            const response = await axios.post(
+
+            // 1. Create the order and get orderId
+            setPaymentStatus('Initializing order...');
+            const orderResponse = await axios.post(
                 `${API_URL}/initialize-khalti`,
                 { 
                     cartItems: preparedCartItems, 
@@ -67,25 +64,46 @@ const Checkout = () => {
                     }
                 }
             );
-            
-            console.log("Payment response:", response.data);
-            
-            if (response.data.success && response.data.payment) {
-                setPaymentStatus('Redirecting to payment gateway...');
-                
-                // Store order details in localStorage for post-payment reference
-                localStorage.setItem('pendingOrderDetails', JSON.stringify({
-                    orderDetails: response.data.orderDetails,
-                    orderId: response.data.purchasedItem._id,
-                    amount: totalAmount
-                }));
-                
-                // Redirect to Khalti payment page
-                window.location.href = response.data.payment.payment_url;
-            } else {
-                setError(response.data.message || 'Failed to initialize payment');
-                setPaymentStatus('Payment initialization failed');
+
+            if (!orderResponse.data.purchasedItem || !orderResponse.data.purchasedItem._id) {
+                throw new Error('Order creation failed');
             }
+            const orderId = orderResponse.data.purchasedItem._id;
+            localStorage.setItem('pendingOrderId', orderId);
+
+            // 2. Send delivery info to backend
+            setPaymentStatus('Saving delivery info...');
+            const deliveryInfo = {
+                firstName: userInfo.firstName,
+                lastName: userInfo.lastName,
+                email: userInfo.email,
+                phone: userInfo.phone,
+                street: userInfo.street,
+                city: userInfo.city,
+                zipcode: userInfo.zipcode,
+                suggestion: userInfo.suggestion,
+                orderId: orderId
+            };
+
+            await axios.post(
+                `${API_URL}/save-delivery-info`,
+                deliveryInfo,
+                {
+                    headers: {
+                        'auth-token': token,
+                        'Content-Type': 'application/json'
+                    }
+                }
+            );
+
+            // 3. Redirect to payment
+            setPaymentStatus('Redirecting to payment gateway...');
+            localStorage.setItem('pendingOrderDetails', JSON.stringify({
+                orderDetails: orderResponse.data.orderDetails,
+                orderId: orderId,
+                amount: totalAmount
+            }));
+            window.location.href = orderResponse.data.payment.payment_url;
         } catch (err) {
             console.error('Payment error:', err);
             setError(err.response?.data?.message || err.message || 'An error occurred while processing your payment');

@@ -65,20 +65,7 @@ const purchasedItemSchema = new mongoose.Schema({
     street: { type: String },
     city: { type: String },
     zipcode: { type: String },
-    suggestion: { type: String },
-    location: {
-      type: {
-        type: String,
-        enum: ['Point'],
-        default: 'Point'
-      },
-      coordinates: {
-        type: [Number],
-        default: [0, 0]
-      }
-    },
-    formattedAddress: { type: String },
-    usingCurrentLocation: { type: Boolean, default: false }
+    suggestion: { type: String }
   },
   
   // Order Status and Timestamps

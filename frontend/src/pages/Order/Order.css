@@ -1,5 +1,5 @@
 .order-container {
-    max-width: 800px;
+    max-width: 1000px;
     margin: 0 auto;
     padding: 24px;
     background-color: #f4f4f4;
@@ -22,8 +22,12 @@
   }
   
   .order-list {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 20px;
     list-style: none;
     padding: 0;
+    justify-content: center;
   }
   
   .order-card {
@@ -31,8 +35,9 @@
     border: 1px solid #ddd;
     border-radius: 10px;
     padding: 20px;
-    margin-bottom: 20px;
+    width: 48%;
     box-shadow: 0 2px 6px rgba(0, 0, 0, 0.04);
+    box-sizing: border-box;
   }
   
   .order-items ul {

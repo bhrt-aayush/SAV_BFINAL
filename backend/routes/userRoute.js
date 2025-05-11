@@ -323,10 +323,6 @@ userRouter.post('/save-delivery-info', fetchUser, async (req, res) => {
       city,
       zipcode,
       suggestion,
-      latitude,
-      longitude,
-      formattedAddress,
-      usingCurrentLocation,
       orderId
     } = req.body;
 
@@ -359,13 +355,7 @@ userRouter.post('/save-delivery-info', fetchUser, async (req, res) => {
           street,
           city,
           zipcode,
-          suggestion,
-          location: {
-            type: 'Point',
-            coordinates: [longitude, latitude] // MongoDB expects [longitude, latitude]
-          },
-          formattedAddress,
-          usingCurrentLocation
+          suggestion
         },
         orderStatus: 'confirmed',
         orderConfirmedAt: new Date()

@@ -58,8 +58,8 @@ const Order = () => {
           ))}
         </ul>
       )}
-      <button className="Home" onClick={() => navigate('/')}>
-        View My Orders
+      <button className="view-orders-btn" onClick={() => navigate('/')}>
+        Back to Home
       </button>
     </div>
   );
