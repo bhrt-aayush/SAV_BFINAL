@@ -100,6 +100,9 @@ const Orders = () => {
                   <p>{order.deliveryInfo?.city}, {order.deliveryInfo?.zipcode}</p>
                 </div>
                 <p className='order-item-phone'>{order.deliveryInfo?.phone}</p>
+                {order.deliveryInfo?.suggestion && (
+                  <p className='order-item-suggestion'><strong>Suggestion:</strong> {order.deliveryInfo.suggestion}</p>
+                )}
                 <div className="payment-info">
                    <p><strong>Order Date:</strong> {order.orderPlacedAt ? new Date(order.orderPlacedAt).toLocaleDateString() : 'N/A'}</p>
                 </div>
