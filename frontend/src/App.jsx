@@ -10,7 +10,7 @@ import Checkout from './pages/Confirm/Confirm';
 import PlaceOrder from './pages/PlaceOrder/PlaceOrder';
 import { PaymentSuccess } from './components/Khalti/Success';
 import { PaymentFailure } from './components/Khalti/failure';
-import Order from './pages/Order/Order';
+import ViewOrder from './pages/ViewOrder/ViewOrder';
 
 const AppContent = () => {
   const [showLogin, setShowLogin] = useState(false);
@@ -33,7 +33,7 @@ const AppContent = () => {
           <Route path='/cart' element={<Cart />} />
           <Route path='/placeorder' element={<PlaceOrder />} />
           <Route path='/confirm' element={<Checkout />} />
-          <Route path="/orders" element={<Order />} />
+          <Route path="/orders" element={<ViewOrder />} />
           <Route path="/payment-success" element={<PaymentSuccess/>}/>  
           <Route path="/payment-failure" element={<PaymentFailure />} />
         </Routes>

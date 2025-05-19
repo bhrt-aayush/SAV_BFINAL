@@ -1,0 +1,89 @@
+.order-container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 24px;
+    background-color: #f4f4f4;
+    font-family: 'Segoe UI', sans-serif;
+  }
+  
+  .order-title {
+    text-align: center;
+    font-size: 2rem;
+    color: #222;
+    margin-bottom: 24px;
+  }
+  
+  .no-orders,
+  .error,
+  .loading {
+    text-align: center;
+    color: #777;
+    font-size: 1.1rem;
+  }
+  
+  .table-container {
+    background: white;
+    border-radius: 10px;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+    overflow-x: auto;
+  }
+  
+  .order-table {
+    width: 100%;
+    border-collapse: collapse;
+    min-width: 800px;
+  }
+  
+  .order-table th,
+  .order-table td {
+    padding: 12px 16px;
+    text-align: left;
+    border-bottom: 1px solid #eee;
+  }
+  
+  .order-table th {
+    background-color: #f8f9fa;
+    font-weight: 600;
+    color: #333;
+  }
+  
+  .order-table tr:hover {
+    background-color: #f8f9fa;
+  }
+  
+  .order-items {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
+  
+  .order-item {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+  
+  .order-item-img {
+    width: 40px;
+    height: 40px;
+    object-fit: cover;
+    border-radius: 4px;
+  }
+  
+  .view-orders-btn {
+    display: block;
+    margin: 30px auto 0;
+    padding: 10px 24px;
+    font-size: 1rem;
+    background-color: #1976d2;
+    color: #fff;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: background-color 0.2s;
+  }
+  
+  .view-orders-btn:hover {
+    background-color: #1565c0;
+  }
+  
