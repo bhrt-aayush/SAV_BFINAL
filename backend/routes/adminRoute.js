@@ -1,5 +1,6 @@
 import express from 'express';
 import PurchasedItem from '../models/paymentModel.js';
+import { getTotalUsers, deleteUser } from '../controllers/userManagementController.js';
 
 const adminRouter = express.Router();
 
@@ -12,5 +13,9 @@ adminRouter.get('/list-all-orders', async (req, res) => {
     res.status(500).json({ success: false, message: 'Failed to fetch orders', error: err.message });
   }
 });
+
+// User Management Routes
+adminRouter.get('/users', getTotalUsers);
+adminRouter.delete('/users/:id', deleteUser);
 
 export default adminRouter; 

@@ -10,7 +10,6 @@ const Orders = () => {
   const [loading, setLoading] = useState(false);
 
   const fetchAllOrders = async () => {
-    setLoading(true);
     try {
       const token = localStorage.getItem('token');
       const response = await axios.get(
@@ -28,13 +27,17 @@ const Orders = () => {
       }
     } catch (error) {
       toast.error(error.response?.data?.message || "Error fetching orders");
-    } finally {
-      setLoading(false);
     }
   };
 
   useEffect(() => {
-    fetchAllOrders();
+    fetchAllOrders(); // Initial fetch
+
+    // Set up polling interval (every 5 seconds)
+    const intervalId = setInterval(fetchAllOrders, 5000);
+
+    // Cleanup interval on component unmount
+    return () => clearInterval(intervalId);
   }, []);
 
   useEffect(() => {
@@ -115,7 +118,6 @@ const Orders = () => {
                   value={order.orderStatus || 'pending'}
                   disabled={loading}
                 >
-                  
                   <option value="confirmed">Confirmed</option>
                   <option value="pending">In Queue</option>
                   <option value="preparing">Processing</option>

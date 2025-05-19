@@ -10,28 +10,35 @@ const Order = () => {
   const [error, setError] = useState(null);
   const navigate = useNavigate();
 
+  const fetchOrders = async () => {
+    try {
+      const token = localStorage.getItem('token');
+      const response = await axios.get('http://localhost:4000/api/user/list-purchased-items/me', {
+        headers: { 'auth-token': token }
+      });
+      // Sort orders by date, newest first
+      const sortedOrders = (response.data.purchasedItems || []).sort((a, b) => {
+        const dateA = new Date(a.orderPlacedAt || 0);
+        const dateB = new Date(b.orderPlacedAt || 0);
+        return dateB - dateA;
+      });
+      setOrders(sortedOrders);
+    } catch (err) {
+      console.error('Error fetching orders:', err);
+      setError('Failed to fetch orders');
+    } finally {
+      setLoading(false);
+    }
+  };
+
   useEffect(() => {
-    const fetchOrders = async () => {
-      try {
-        const token = localStorage.getItem('token');
-        const response = await axios.get('http://localhost:4000/api/user/list-purchased-items/me', {
-          headers: { 'auth-token': token }
-        });
-        // Sort orders by date, newest first
-        const sortedOrders = (response.data.purchasedItems || []).sort((a, b) => {
-          const dateA = new Date(a.orderPlacedAt || 0);
-          const dateB = new Date(b.orderPlacedAt || 0);
-          return dateB - dateA;
-        });
-        setOrders(sortedOrders);
-      } catch (err) {
-        console.error('Error fetching orders:', err);
-        setError('Failed to fetch orders');
-      } finally {
-        setLoading(false);
-      }
-    };
-    fetchOrders();
+    fetchOrders(); // Initial fetch
+
+    // Set up polling interval (every 5 seconds)
+    const intervalId = setInterval(fetchOrders, 5000);
+
+    // Cleanup interval on component unmount
+    return () => clearInterval(intervalId);
   }, []);
 
   if (loading) return <div className="loading">Loading orders...</div>;
