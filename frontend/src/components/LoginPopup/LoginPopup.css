@@ -184,3 +184,22 @@
         opacity: 1;
     }
 }
+
+/* Forgot Password Link */
+.forgot-password {
+    text-align: center;
+    font-size: 0.9rem;
+    color: #777;
+    margin: 0.5rem 0;
+}
+
+.forgot-password span {
+    color: #4CAF50;
+    cursor: pointer;
+    font-weight: 600;
+    transition: color 0.3s ease;
+}
+
+.forgot-password span:hover {
+    color: #45a049;
+}

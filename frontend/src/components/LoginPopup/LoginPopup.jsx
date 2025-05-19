@@ -3,6 +3,7 @@ import './LoginPopup.css';
 import { assets } from '../../../public/assets/frontend_assets/assets';
 import { StoreContext } from '../../context/StoreContext';
 import OTPVerification from '../OTPVerification/OTPVerification';
+import ForgotPassword from '../ForgotPassword/ForgotPassword';
 
 const LoginPopup = ({ setShowLogin }) => {
     const [currentState, setCurrentState] = useState('Login');
@@ -14,6 +15,7 @@ const LoginPopup = ({ setShowLogin }) => {
     const [error, setError] = useState('');
     const [success, setSuccess] = useState('');
     const [showOTP, setShowOTP] = useState(false);
+    const [showForgotPassword, setShowForgotPassword] = useState(false);
     const { login, register } = useContext(StoreContext);
 
     const onChangeHandler = (event) => {
@@ -66,6 +68,13 @@ const LoginPopup = ({ setShowLogin }) => {
                         setShowLogin(false);
                     }} 
                 />
+            ) : showForgotPassword ? (
+                <ForgotPassword 
+                    onClose={() => {
+                        setShowForgotPassword(false);
+                        setShowLogin(false);
+                    }}
+                />
             ) : (
                 <div className='login-popup'>
                     <form onSubmit={handleSubmit} className="login-popup-container">
@@ -110,10 +119,11 @@ const LoginPopup = ({ setShowLogin }) => {
                             {currentState === 'Sign Up' ? 'Create account' : 'Login'}
                         </button>
                         
-                        <div className="login-popup-condition">
-                            <input type="checkbox" required />
-                            <p>By continuing, I agree to the terms of use & privacy policy</p>
-                        </div>
+                        {currentState === 'Login' && (
+                            <p className="forgot-password">
+                                Forgot password? <span onClick={() => setShowForgotPassword(true)}>Click here</span>
+                            </p>
+                        )}
                         
                         {currentState === 'Login' ? (
                             <p>Create a new account? <span onClick={() => setCurrentState('Sign Up')}>Click here</span></p>

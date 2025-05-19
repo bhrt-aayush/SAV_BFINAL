@@ -302,5 +302,95 @@ export async function verifyKhaltiPayment(pidx) {
     }
 }
 
+// Request password reset
+export const requestPasswordReset = async (req, res) => {
+    const { email } = req.body;
+    try {
+        const user = await userModel.findOne({ email });
+        if (!user) {
+            return res.json({ success: false, message: 'User not found' });
+        }
+
+        // Generate OTP
+        const otp = generateOTP();
+        const otpExpires = Date.now() + 10 * 60 * 1000; // 10 minutes
+
+        // Save OTP to database
+        const otpRecord = new otpModel({
+            email,
+            otp,
+            createdAt: new Date()
+        });
+        await otpRecord.save();
+
+        // Send OTP email
+        const emailSent = await sendOTPEmail(email, otp, 'Password Reset');
+        if (!emailSent) {
+            return res.json({ success: false, message: 'Failed to send OTP' });
+        }
+
+        res.json({ success: true, message: 'OTP sent to your email' });
+    } catch (error) {
+        console.error('Password reset request error:', error);
+        res.json({ success: false, message: 'Error processing request' });
+    }
+};
+
+// Verify password reset OTP
+export const verifyPasswordResetOTP = async (req, res) => {
+    const { email, otp } = req.body;
+    try {
+        const otpRecord = await otpModel.findOne({ email, otp });
+        if (!otpRecord) {
+            return res.json({ success: false, message: 'Invalid OTP' });
+        }
+
+        const now = new Date();
+        const timeDiff = (now - otpRecord.createdAt) / 1000; // seconds
+
+        if (timeDiff > 600) { // 10 minutes
+            await otpModel.deleteOne({ _id: otpRecord._id });
+            return res.json({ success: false, message: 'OTP expired' });
+        }
+
+        res.json({ success: true, message: 'OTP verified' });
+    } catch (error) {
+        console.error('OTP verification error:', error);
+        res.json({ success: false, message: 'Error verifying OTP' });
+    }
+};
+
+// Reset password
+export const resetPassword = async (req, res) => {
+    const { email, otp, newPassword } = req.body;
+    try {
+        // Verify OTP first
+        const otpRecord = await otpModel.findOne({ email, otp });
+        if (!otpRecord) {
+            return res.json({ success: false, message: 'Invalid OTP' });
+        }
+
+        const user = await userModel.findOne({ email });
+        if (!user) {
+            return res.json({ success: false, message: 'User not found' });
+        }
+
+        // Hash new password
+        const salt = await bcrypt.genSalt(10);
+        const hashedPassword = await bcrypt.hash(newPassword, salt);
+
+        // Update password
+        user.password = hashedPassword;
+        await user.save();
+
+        // Delete used OTP
+        await otpModel.deleteOne({ _id: otpRecord._id });
+
+        res.json({ success: true, message: 'Password reset successful' });
+    } catch (error) {
+        console.error('Password reset error:', error);
+        res.json({ success: false, message: 'Error resetting password' });
+    }
+};
 
 // export default {loginUser, registerUser, initializeKhaltiPayment, verifyKhaltiPayment}

@@ -1,5 +1,5 @@
 import express from 'express';
-import { loginUser, registerUser, verifyOTP, resendVerification, initializeKhaltiPayment, verifyKhaltiPayment } from '../controllers/userController.js';
+import { loginUser, registerUser, verifyOTP, resendVerification, initializeKhaltiPayment, verifyKhaltiPayment, requestPasswordReset, verifyPasswordResetOTP, resetPassword } from '../controllers/userController.js';
 import paymentModel from '../models/paymentModel.js';
 import foodModel from '../models/foodModel.js';
 import { fetchUser } from '../controllers/helper.js';
@@ -408,5 +408,10 @@ userRouter.get('/delivery-info/:orderId', fetchUser, async (req, res) => {
     });
   }
 });
+
+// Password reset routes
+userRouter.post('/request-password-reset', requestPasswordReset);
+userRouter.post('/verify-password-reset-otp', verifyPasswordResetOTP);
+userRouter.post('/reset-password', resetPassword);
 
 export default userRouter;
