@@ -76,3 +76,140 @@
 .food-item-counter img{
     width: 30px;
 }
+
+/* Reviews Section Styles */
+.reviews-section {
+    margin-top: 20px;
+    border-top: 1px solid #eee;
+    padding-top: 15px;
+}
+
+.reviews-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 15px;
+}
+
+.reviews-header h4 {
+    margin: 0;
+    font-size: 18px;
+    color: #333;
+}
+
+.add-review-btn {
+    background-color: #ff7f50;
+    color: white;
+    border: none;
+    padding: 8px 15px;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 14px;
+    transition: background-color 0.3s;
+}
+
+.add-review-btn:hover {
+    background-color: #ff6347;
+}
+
+.review-form {
+    background-color: #f9f9f9;
+    padding: 15px;
+    border-radius: 8px;
+    margin-bottom: 20px;
+}
+
+.review-form textarea {
+    width: 100%;
+    min-height: 80px;
+    padding: 10px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    margin-bottom: 10px;
+    resize: vertical;
+}
+
+.rating-input {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 15px;
+}
+
+.rating-input label {
+    font-weight: 500;
+}
+
+.rating-input input {
+    width: 60px;
+    padding: 5px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+}
+
+.review-form button {
+    background-color: #ff7f50;
+    color: white;
+    border: none;
+    padding: 8px 20px;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 14px;
+    transition: background-color 0.3s;
+}
+
+.review-form button:hover {
+    background-color: #ff6347;
+}
+
+.existing-reviews {
+    margin-top: 20px;
+}
+
+.review-item {
+    background-color: #f9f9f9;
+    padding: 15px;
+    border-radius: 8px;
+    margin-bottom: 15px;
+}
+
+.review-header {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 10px;
+}
+
+.review-rating {
+    font-weight: 500;
+    color: #ff7f50;
+}
+
+.review-author {
+    color: #666;
+    font-size: 14px;
+}
+
+.review-message {
+    margin: 10px 0;
+    line-height: 1.4;
+}
+
+.review-date {
+    color: #888;
+    font-size: 12px;
+}
+
+.error-message {
+    background-color: #ffebee;
+    color: #c62828;
+    padding: 10px;
+    border-radius: 4px;
+    margin: 10px 0;
+    font-size: 14px;
+    border: 1px solid #ffcdd2;
+}
+
+.review-form button:disabled {
+    background-color: #ccc;
+    cursor: not-allowed;
+}
