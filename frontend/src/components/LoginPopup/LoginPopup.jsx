@@ -39,6 +39,7 @@ const LoginPopup = ({ setShowLogin }) => {
                     setSuccess('Login successful!');
                     setTimeout(() => {
                         setShowLogin(false);
+                        window.location.reload();
                     }, 1500);
                 } else {
                     setError(result.message || 'Invalid email or password');

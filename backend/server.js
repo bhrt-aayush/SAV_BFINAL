@@ -5,6 +5,7 @@ import foodRouter from './routes/foodRoute.js';
 import userRouter from './routes/userRoute.js';
 import adminRouter from './routes/adminRoute.js';
 import reviewRouter from './routes/reviewRoute.js';
+import orderRouter from './routes/orderRoute.js';
 import path from 'path';
 import { fileURLToPath } from 'url';
 import 'dotenv/config';
@@ -37,6 +38,7 @@ app.use("/api/food", foodRouter);
 app.use("/api/user", userRouter);
 app.use("/api/admin", adminRouter);
 app.use("/api/reviews", reviewRouter);
+app.use("/api/order", orderRouter);
 
 app.get("/", (req, res) => {
     res.send("API working");

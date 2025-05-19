@@ -94,6 +94,7 @@ const ForgotPassword = ({ onClose }) => {
                 setSuccess('Password reset successful');
                 setTimeout(() => {
                     onClose();
+                    window.location.reload();
                 }, 1500);
             } else {
                 setError(data.message || 'Failed to reset password');

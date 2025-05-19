@@ -22,6 +22,7 @@ const OTPVerification = ({ email, onClose }) => {
                 setTimeout(() => {
                     onClose();
                     navigate('/');
+                    window.location.reload();
                 }, 1500);
             } else {
                 setError(result.message || 'Invalid OTP');

@@ -12,12 +12,12 @@ const Orders = () => {
   const fetchAllOrders = async () => {
     setLoading(true);
     try {
-      const token = localStorage.getItem('token'); // Use your admin token
+      const token = localStorage.getItem('token');
       const response = await axios.get(
         url + '/api/admin/list-all-orders',
         {
           headers: {
-            'auth-token': token,
+            'Authorization': `Bearer ${token}`,
           },
         }
       );
@@ -50,14 +50,14 @@ const Orders = () => {
         status: event.target.value
       }, {
         headers: {
-          'auth-token': token,
+          'Authorization': `Bearer ${token}`,
         },
       });
       if (response.data.success) {
         setOrders(prevOrders =>
           prevOrders.map(order =>
             order._id === orderId
-              ? { ...order, orderStatus: event.target.value }
+              ? response.data.data
               : order
           )
         );
@@ -115,8 +115,9 @@ const Orders = () => {
                   value={order.orderStatus || 'pending'}
                   disabled={loading}
                 >
-                  <option value="pending">In Queue</option>
+                  
                   <option value="confirmed">Confirmed</option>
+                  <option value="pending">In Queue</option>
                   <option value="preparing">Processing</option>
                   <option value="out_for_delivery">Out for Delivery</option>
                   <option value="delivered">Delivered</option>
