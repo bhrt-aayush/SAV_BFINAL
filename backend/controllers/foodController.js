@@ -24,13 +24,13 @@ export const addFood = async (req, res) => {
         // Copy to admin assets
         copyFile(
             path.join('uploads', filename),
-            path.join('admin/public/assets', filename)
+            path.join('C:/Users/Numbur iT/OneDrive/Desktop/SAV_BFINAL/admin/public/assets', filename)
         );
 
         // Copy to frontend assets
         copyFile(
             path.join('uploads', filename),
-            path.join('frontend/public/assets', filename)
+            path.join('C:/Users/Numbur iT/OneDrive/Desktop/SAV_BFINAL/frontend/public/assets', filename)
         );
 
         // Create new food item without any custom id

@@ -11,8 +11,8 @@ const foodRouter = express.Router();
 const createUploadDirs = () => {
     const dirs = [
         'uploads',
-        'admin/public/assets',
-        'frontend/public/assets'
+        'C:/Users/Numbur iT/OneDrive/Desktop/SAV_BFINAL/admin/public/assets',
+        'C:/Users/Numbur iT/OneDrive/Desktop/SAV_BFINAL/frontend/public/assets'
     ];
     
     dirs.forEach(dir => {

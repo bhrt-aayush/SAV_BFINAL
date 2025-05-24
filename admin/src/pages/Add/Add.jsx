@@ -78,7 +78,17 @@ const Add = () => {
                         <img src={image ? URL.createObjectURL(image) : assets.upload_area} alt="" />
                     </label>
                     <input 
-                        onChange={(e) => setImage(e.target.files[0])} 
+                        onChange={(e) => {
+                            const file = e.target.files[0];
+                            if (file && file.type.startsWith('image/')) {
+                                setImage(file);
+                            } else {
+                                setImage(null);
+                                toast.error("Please select an image file.");
+                                // Clear the file input value to allow selecting the same file again after an error
+                                e.target.value = null;
+                            }
+                        }}
                         type="file" 
                         id='image' 
                         hidden 

@@ -6,6 +6,8 @@ import Add from './pages/Add/Add'
 import List from './pages/List/List'
 import Orders from './pages/Orders/Orders'
 import Users from './pages/Users/Users'
+import { ToastContainer } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 const App = () => {
   return (
@@ -21,6 +23,7 @@ const App = () => {
           <Route path='/users' element={<Users/>}/>
         </Routes>
       </div>
+      <ToastContainer />
     </div>
   )
 }

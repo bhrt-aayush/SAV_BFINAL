@@ -1,53 +1,155 @@
-.list-table-format {
-    display: grid;
-    grid-template-columns: 1fr 3fr 1fr 1fr 0.8fr;
+.food-list-container {
+  padding: 2rem;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+.food-list-container h1 {
+  text-align: center;
+  margin-bottom: 2rem;
+  color: #333;
+  font-size: 2rem;
+}
+
+.table-container {
+  background: white;
+  border-radius: 8px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  overflow-x: auto;
+  margin-bottom: 2rem;
+  border: 1px solid #ddd;
+}
+
+.food-table {
+  width: 100%;
+  border-collapse: separate;
+  border-spacing: 0;
+  min-width: 800px;
+}
+
+.food-table th,
+.food-table td {
+  padding: 1rem 1.5rem;
+  text-align: left;
+  border-bottom: 1px solid #eee;
+}
+
+.food-table th {
+  background-color: #f8f9fa;
+  font-weight: 600;
+  color: #555;
+  text-transform: uppercase;
+  font-size: 0.9rem;
+}
+
+.food-table tbody tr:last-child td {
+  border-bottom: none;
+}
+
+.food-table tbody tr:hover {
+  background-color: #e9ecef;
+}
+
+.table-image-container {
+  width: 60px;
+  height: 60px;
+  overflow: hidden;
+  border-radius: 50%; /* Make image round */
+  flex-shrink: 0; /* Prevent shrinking in flex layout */
+  margin-right: 1rem; /* Space between image and text */
+  border: 1px solid #ddd; /* Optional: add a border around the image */
+}
+
+.table-food-image {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.description-cell {
+  max-width: 250px; /* Adjusted max-width */
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: normal; /* Allow text to wrap initially */
+  word-break: break-word; /* Break long words */
+}
+
+.food-table td {
+    font-size: 0.95rem; /* Slightly smaller text */
+    color: #444;
+    vertical-align: middle; /* Vertically align cell content */
+}
+
+.food-table td:nth-child(2), /* Name column */
+.food-table td:nth-child(3)  /* Price column */ {
+    white-space: nowrap; /* Prevent name and price from wrapping */
+}
+
+.food-table td:first-child { /* Image column */
+    display: flex;
     align-items: center;
-    gap: 15px;
-    padding: 15px 20px;
-    border: 1px solid #e0e0e0;
-    font-size: 14px;
-    border-radius: 8px;
-    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
-    background-color: #fff;
-    transition: all 0.3s ease;
 }
 
-.list-table-format.title {
-    background-color: #f7f7f7;
-    font-weight: bold;
-    color: #333;
-    border-radius: 8px;
-    padding: 10px;
-    text-align: left;
+.delete-btn {
+  background-color: #e74c3c;
+  color: white;
+  border: none;
+  padding: 0.5rem 1rem;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+  font-size: 0.9rem;
 }
 
-.list-table-format img {
-    width: 45px;
-    height: 45px;
-    object-fit: cover;
-    border-radius: 50%;
+.delete-btn:hover {
+  background-color: #c0392b;
 }
 
-.list-table-format:hover {
-    transform: translateY(-5px);
-    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+.loading {
+  text-align: center;
+  font-size: 1.2rem;
+  color: #666;
+  padding: 2rem;
 }
 
-@media (max-width: 768px) {
-    .list-table-format {
-        grid-template-columns: 1fr 2fr 1fr;
-        gap: 20px;
-    }
-
-    .list-table-format.title {
-        display: none;
-    }
+.error {
+  text-align: center;
+  color: #e74c3c;
+  padding: 2rem;
+  font-size: 1.2rem;
 }
 
-@media (max-width: 480px) {
-    .list-table-format {
-        grid-template-columns: 1fr 1fr;
-        gap: 15px;
-        padding: 10px;
-    }
+/* Pagination Styles */
+.pagination {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-top: 2rem;
+  gap: 1rem;
+}
+
+.pagination-btn {
+  background-color: #3498db;
+  color: white;
+  border: none;
+  padding: 0.5rem 1rem;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+  font-size: 1rem;
+}
+
+.pagination-btn:hover:not(:disabled) {
+  background-color: #2980b9;
+}
+
+.pagination-btn:disabled {
+  background-color: #bdc3c7;
+  cursor: not-allowed;
+}
+
+.page-info {
+  font-size: 1rem;
+  color: #666;
+  padding: 0 1rem;
 }
